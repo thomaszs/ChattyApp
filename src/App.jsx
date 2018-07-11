@@ -13,6 +13,7 @@ class App extends Component {
     this.addMessage = this.addMessage.bind(this);
     this.socket = new WebSocket('ws://localhost:3001/');
     this.onMessage = this.onMessage.bind(this);
+    this.changeName = this.changeName.bind(this);
   }
   onMessage(event) {
     const parsedData = JSON.parse(event.data);
@@ -28,6 +29,12 @@ class App extends Component {
   this.socket.onmessage = this.onMessage;
   }
 
+  changeName(newName) {
+    this.setState({
+      currentUser: {name: newName},
+    })
+  }
+
   addMessage(content) {
     const newMessage = {username: this.state.currentUser.name, content:content};
     // const messages = this.state.messages.concat(newMessage)
@@ -41,7 +48,7 @@ class App extends Component {
   <a href="/" className="navbar-brand">Chatty</a>
 </nav>
 <MessageList message={this.state.messages}/>
-<ChatBar currentUser={this.state.currentUser.name} addMessage={ this.addMessage }/>
+<ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage} changeName={this.changeName}/>
 </div>
     );
   }
