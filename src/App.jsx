@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ChatBar from './ChatBar.jsx';
 import Message from './Message.jsx';
 import MessageList from './MessageList.jsx';
@@ -7,49 +7,56 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-        messages: []
-    };  
+      currentUser: { name: "Bob" }, // optional. if currentUser is not defined, it means the user is Anonymous
+      messages: []
+    };
     this.addMessage = this.addMessage.bind(this);
+    this.sendChangeName = this.sendChangeName.bind(this);
     this.socket = new WebSocket('ws://localhost:3001/');
     this.onMessage = this.onMessage.bind(this);
-    this.changeName = this.changeName.bind(this);
   }
+
   onMessage(event) {
-    const parsedData = JSON.parse(event.data);
-    const messages = this.state.messages.concat(parsedData);
-     this.setState({messages: messages});
-     }
+    const data = JSON.parse(event.data);
+    const messages = this.state.messages.concat(data);
+    switch(data.type) {
+      case "incomingMessage":
+        this.setState({ messages: messages });
+        break;
+      case "incomingNotification":
+        this.setState({ currentUser: {name: data.newName}, messages: messages});
+        break;
+      default:
+      throw new Error("Unknown event type " + data.type);
+    }  
+  }
 
   componentDidMount() {
-   function onConnection(event) {
-      console.log('Connected to server')
-    }
-  this.socket.addEventListener('open', onConnection);
-  this.socket.onmessage = this.onMessage;
+    this.socket.onopen = (event) => {
+      console.log("Connected to server");
+    };
+    this.socket.onmessage = this.onMessage;
   }
 
-  changeName(newName) {
-    this.setState({
-      currentUser: {name: newName},
-    })
+  sendChangeName(newName) {
+    const sendNewName = {type:"postNotification", newName, content:`${this.state.currentUser.name} has changed their name to ${newName}.`}
+    this.socket.send(JSON.stringify(sendNewName));
   }
+
 
   addMessage(content) {
-    const newMessage = {username: this.state.currentUser.name, content:content};
-    // const messages = this.state.messages.concat(newMessage)
-    // this.setState({messages: messages});
+    const newMessage = { username: this.state.currentUser.name, content: content, type: "postMessage" };
     this.socket.send(JSON.stringify(newMessage));
   }
   render() {
     return (
       <div>
-      <nav className="navbar">
-  <a href="/" className="navbar-brand">Chatty</a>
-</nav>
-<MessageList message={this.state.messages}/>
-<ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage} changeName={this.changeName}/>
-</div>
+        <nav className="navbar">
+          <a href="/" className="navbar-brand">Chatty</a>
+        </nav>
+        <MessageList message={this.state.messages}/>
+        <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage} sendChangeName={this.sendChangeName} />
+      </div>
     );
   }
 }

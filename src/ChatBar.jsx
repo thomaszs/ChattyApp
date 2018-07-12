@@ -9,20 +9,14 @@ class ChatBar extends Component {
     this.onContent = this.onContent.bind(this);
     this.onSubmitContent = this.onSubmitContent.bind(this);
     this.onChangeUserName = this.onChangeUserName.bind(this);
-    // this.onUser = this.onUser.bind(this);
   }
 
 onChangeUserName(event) {
   if(event.keyCode === 13) {
-    this.props.changeName(event.target.value)
+    this.props.sendChangeName(event.target.value)
   }
 }  
 
-// onUser(event) {
-//   this.setState({
-//     username: event.target.value,
-//   });
-// }
 
 onSubmitContent(event) {
   if (event.keyCode === 13) {
