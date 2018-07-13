@@ -8,7 +8,7 @@ class App extends Component {
     super(props);
     this.state = {
       numberOfUsers : 0,
-      currentUser: { name: "Bob" }, // optional. if currentUser is not defined, it means the user is Anonymous
+      currentUser: { name: "Anonymous" }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: []
     };
     this.addMessage = this.addMessage.bind(this);
@@ -26,7 +26,7 @@ class App extends Component {
         this.setState({ messages: messages });
         break;
       case "incomingNotification":
-        this.setState({ currentUser: {name: data.newName}, messages: messages});
+        this.setState({ messages: messages });
         break;  
       case 'connectedUser':
         this.setState({ numberOfUsers: data.numberOfUsers})  
@@ -44,13 +44,14 @@ class App extends Component {
   }
 
   sendChangeName(newName) {
-    const sendNewName = {type:"postNotification", newName, content:`${this.state.currentUser.name} has changed their name to ${newName}.`}
+    const sendNewName = {type:"postNotification", content:`${this.state.currentUser.name} has changed their name to ${newName}.`};
+    this.setState({currentUser: {name: newName}})
     this.socket.send(JSON.stringify(sendNewName));
   }
 
 
   addMessage(content) {
-    const newMessage = { username: this.state.currentUser.name, content: content, type: "postMessage" };
+    const newMessage = { username: this.state.currentUser, content: content, type: "postMessage" };
     this.socket.send(JSON.stringify(newMessage));
   }
   render() {
@@ -58,7 +59,7 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
-          <span>{this.state.numberOfUsers} Users online</span>
+          <span className={'userCount'}>{this.state.numberOfUsers} Users online</span>
         </nav>
         <MessageList message={this.state.messages}/>
         <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage} sendChangeName={this.sendChangeName} />

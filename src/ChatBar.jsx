@@ -13,7 +13,7 @@ class ChatBar extends Component {
 
 onChangeUserName(event) {
   if(event.keyCode === 13) {
-    this.props.sendChangeName(event.target.value)
+    this.props.sendChangeName(event.target.value);
   }
 }  
 
@@ -32,7 +32,7 @@ onContent(event) {
 }
 render () {
   return (<footer className="chatbar">
-  <input className="chatbar-username" placeholder="Your Name (Optional)"  defaultValue={this.props.currentUser} onKeyUp={this.onChangeUserName}/>
+  <input className="chatbar-username" id="username" placeholder="Your Name (Optional)"  defaultValue={this.props.currentUser} onKeyUp={this.onChangeUserName}/>
   <input className="chatbar-message" placeholder="Type a message and hit ENTER" onChange={this.onContent} onKeyUp={this.onSubmitContent} value={this.state.content}/>
 </footer>);
 }

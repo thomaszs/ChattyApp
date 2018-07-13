@@ -1,16 +1,28 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700");
+@import url("https://fonts.googleapis.com/css?family=Lato");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css");
+@import url("https://fonts.googleapis.com/css?family=Bungee|Bungee+Shade");
 
     body {
       background: white;
       color: black;
-      font-family: 'Open Sans', sans-serif;
-      font-size: 14px;
+      font-family: 'Bungee', sans-serif;
+      font-size: 18px;
       margin: 70px 0;
     }
 
+    .notification-content
+    {
+      color: red;
+    }
+    .userCount {
+      color: black;
+      float: right;
+      margin-top: 25px;
+    }
+
     .chatbar {
-      background: tomato;
+      background:whitesmoke;
       border-top: 1px solid black;
       bottom: 0;
       display: flex;
@@ -65,7 +77,7 @@
     }
 
     .navbar {
-      background: tomato;
+      background: orange;
       border-bottom: 1px solid black;
       height: 60px;
       left: 0;
